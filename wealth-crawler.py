@@ -1,18 +1,21 @@
 """
 ═══════════════════════════════════════════════════════════════════════════════
-MSCI WEALTH MANAGEMENT INTELLIGENCE PLATFORM v2.1
+MSCI WEALTH MANAGEMENT INTELLIGENCE PLATFORM v2.2 ULTIMATE
 ═══════════════════════════════════════════════════════════════════════════════
 
-Enterprise-grade web intelligence gathering for wealth management firms
-Built using advanced techniques from "Web Scraping with Python" by Ryan Mitchell
+The DEFINITIVE enterprise intelligence platform combining the best of v2.0 and v2.1
 
-NEW in v2.1:
-- AUM (Assets Under Management) detection with extraction
-- Firm profile intelligence (clients, offices, founding year)
-- Refactored code architecture for maintainability
-- Bug fixes for variable scoping
-- Enhanced error handling
-- Improved UI with AUM value display
+ULTIMATE FEATURES:
+✅ ALL 48 intelligence points (v2.1's expanded coverage)
+✅ AUM detection & extraction (v2.1's breakthrough feature)
+✅ 3 export options (v2.0's comprehensive exports restored)
+✅ Strategic use cases (v2.0's sales enablement content)
+✅ Complete documentation (v2.0's "How It Works" section)
+✅ Bug fixes (v2.1's variable scoping fixes)
+✅ Enhanced error handling (v2.1's improved messages)
+✅ Professional UI (v2.0's detailed branding + v2.1's AUM highlights)
+
+This is the COMPLETE, PRODUCTION-READY, FEATURE-COMPLETE version.
 
 © 2025 - Built for MSCI Sales Intelligence Team
 """
@@ -24,17 +27,19 @@ from urllib.parse import urljoin, urlparse
 import time
 import re
 import pandas as pd
-import logging
 
-# Configure page
+# ═══════════════════════════════════════════════════════════════════════════
+# PAGE CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════
+
 st.set_page_config(
-    page_title="MSCI Intelligence Platform v2.1",
+    page_title="MSCI Intelligence Platform v2.2",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Enhanced CSS with AUM highlights + Professional styling
 st.markdown("""
 <style>
     .main-header {
@@ -100,7 +105,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════
-# INTELLIGENCE CONFIGURATION
+# INTELLIGENCE CONFIGURATION - COMPLETE 48 POINTS
 # ═══════════════════════════════════════════════════════════════════════════
 
 INTELLIGENCE_CATEGORIES = {
@@ -157,7 +162,7 @@ INTELLIGENCE_CATEGORIES = {
             "priority": "high"
         },
         "Private Debt Funds": {
-            "keywords": ["private debt", "private credit", "direct lending", "mezzanine"],
+            "keywords": ["private debt", "private credit", "direct lending", "mezzanine", "distressed debt"],
             "weight": 1.0,
             "priority": "high"
         },
@@ -167,42 +172,42 @@ INTELLIGENCE_CATEGORIES = {
             "priority": "medium"
         },
         "Private Real Estate Funds": {
-            "keywords": ["private real estate", "real estate fund", "property fund"],
+            "keywords": ["private real estate", "real estate fund", "property fund", "real estate PE"],
             "weight": 1.0,
             "priority": "medium"
         },
         "Infrastructure Funds": {
-            "keywords": ["infrastructure fund", "infrastructure investment"],
+            "keywords": ["infrastructure fund", "infrastructure investment", "infrastructure equity"],
             "weight": 1.0,
             "priority": "medium"
         },
-        "Real Estate Assets": {
+        "Real Estate Assets (Direct)": {
             "keywords": ["real estate", "commercial property", "REIT", "property investment"],
             "weight": 0.8,
             "priority": "low"
         },
-        "Private Companies": {
-            "keywords": ["private company", "private investment", "direct investment"],
+        "Private Companies (Direct Investment)": {
+            "keywords": ["private company", "private investment", "direct investment", "co-investment"],
             "weight": 0.9,
             "priority": "medium"
         },
-        "Structured Products": {
-            "keywords": ["structured products", "structured notes", "equity derivatives"],
+        "Structured Products (Equities)": {
+            "keywords": ["structured products", "structured notes", "equity derivatives", "capital protected"],
             "weight": 0.9,
             "priority": "medium"
         },
         "MSCI Futures & Options": {
-            "keywords": ["MSCI futures", "MSCI options", "index derivatives"],
+            "keywords": ["MSCI futures", "MSCI options", "index derivatives", "MSCI contracts"],
             "weight": 1.1,
             "priority": "high"
         },
         "MSCI OTC Derivatives": {
-            "keywords": ["MSCI OTC", "MSCI derivatives", "MSCI swaps"],
+            "keywords": ["MSCI OTC", "MSCI derivatives", "MSCI swaps", "total return swap"],
             "weight": 1.1,
             "priority": "high"
         },
         "Carbon Projects": {
-            "keywords": ["carbon", "carbon offset", "carbon credit", "climate project"],
+            "keywords": ["carbon", "carbon offset", "carbon credit", "climate project", "carbon neutrality"],
             "weight": 0.9,
             "priority": "medium"
         }
@@ -210,7 +215,7 @@ INTELLIGENCE_CATEGORIES = {
     
     "Third Parties & Partnerships": {
         "Investment Consultants": {
-            "keywords": ["investment consultant", "advisory firm", "consultant"],
+            "keywords": ["investment consultant", "advisory firm", "consultant", "advisor"],
             "weight": 1.0,
             "priority": "high"
         },
@@ -220,7 +225,7 @@ INTELLIGENCE_CATEGORIES = {
             "priority": "high"
         },
         "External Equity Managers": {
-            "keywords": ["external manager", "third party manager", "equity manager"],
+            "keywords": ["external manager", "third party manager", "equity manager", "outsourced"],
             "weight": 0.9,
             "priority": "medium"
         },
@@ -230,27 +235,27 @@ INTELLIGENCE_CATEGORIES = {
             "priority": "medium"
         },
         "External Private Asset Managers": {
-            "keywords": ["private asset manager", "alternative manager"],
+            "keywords": ["private asset manager", "alternative manager", "private markets"],
             "weight": 0.9,
             "priority": "medium"
         },
         "Sustainability Regulations": {
-            "keywords": ["SFDR", "Article 8", "Article 9", "ESG regulation"],
+            "keywords": ["SFDR", "Article 8", "Article 9", "ESG regulation", "sustainable finance"],
             "weight": 1.0,
             "priority": "high"
         },
         "IBOR - Privates": {
-            "keywords": ["IBOR", "investment book", "book of records", "private"],
+            "keywords": ["IBOR", "investment book", "book of records", "private assets"],
             "weight": 0.8,
             "priority": "low"
         },
         "IBOR - Public": {
-            "keywords": ["IBOR", "investment book", "book of records", "public"],
+            "keywords": ["IBOR", "investment book", "book of records", "public markets"],
             "weight": 0.8,
             "priority": "low"
         },
         "Regulatory Service Providers": {
-            "keywords": ["regulatory service", "compliance provider", "regtech"],
+            "keywords": ["regulatory service", "compliance provider", "regulatory technology", "regtech"],
             "weight": 0.8,
             "priority": "medium"
         }
@@ -258,55 +263,55 @@ INTELLIGENCE_CATEGORIES = {
     
     "Internal Capabilities": {
         "Fundamental Active Equity": {
-            "keywords": ["fundamental", "active equity", "active management"],
+            "keywords": ["fundamental", "active equity", "active management", "stock picking"],
             "weight": 1.0,
             "priority": "high"
         },
         "Quantitative Equity": {
-            "keywords": ["quantitative", "quant equity", "systematic", "factor"],
+            "keywords": ["quantitative", "quant equity", "systematic", "factor investing"],
             "weight": 1.0,
             "priority": "high"
         },
         "Indexed Equity": {
-            "keywords": ["indexed equity", "passive", "index tracking"],
+            "keywords": ["indexed equity", "passive", "index tracking", "index replication"],
             "weight": 1.0,
             "priority": "high"
         },
-        "Fixed Income": {
-            "keywords": ["fixed income", "bond", "credit management"],
+        "Fixed Income Management": {
+            "keywords": ["fixed income", "bond", "credit management", "duration management"],
             "weight": 1.0,
             "priority": "high"
         },
         "Direct Indexing": {
-            "keywords": ["direct indexing", "custom indexing", "SMA"],
+            "keywords": ["direct indexing", "custom indexing", "separately managed accounts", "SMA"],
             "weight": 1.1,
             "priority": "high"
         }
     },
     
-    "Analytics & Technology": {
+    "Analytics & Technology Platforms": {
         "Model Portfolio Platform": {
-            "keywords": ["model portfolio", "model management", "portfolio models"],
+            "keywords": ["model portfolio", "model management", "portfolio models", "model delivery"],
             "weight": 1.1,
             "priority": "high"
         },
         "Performance Attribution": {
-            "keywords": ["performance attribution", "attribution analysis"],
+            "keywords": ["performance attribution", "attribution analysis", "return decomposition"],
             "weight": 1.0,
             "priority": "high"
         },
         "Risk Platform": {
-            "keywords": ["risk platform", "risk management", "risk analytics", "VaR"],
+            "keywords": ["risk platform", "risk management", "risk analytics", "risk system", "VaR"],
             "weight": 1.2,
             "priority": "high"
         },
         "Portfolio Analytics - Equities": {
-            "keywords": ["equity analytics", "portfolio analytics", "equity analysis"],
+            "keywords": ["equity analytics", "portfolio analytics", "equity analysis", "stock analysis"],
             "weight": 1.0,
             "priority": "high"
         },
         "Portfolio Analytics - Fixed Income": {
-            "keywords": ["fixed income analytics", "bond analytics"],
+            "keywords": ["fixed income analytics", "bond analytics", "credit analysis"],
             "weight": 1.0,
             "priority": "high"
         },
@@ -315,13 +320,13 @@ INTELLIGENCE_CATEGORIES = {
             "weight": 1.0,
             "priority": "high"
         },
-        "Client Reporting": {
-            "keywords": ["client reporting", "reporting platform"],
+        "Client Reporting Platform": {
+            "keywords": ["client reporting", "reporting platform", "performance reporting"],
             "weight": 1.0,
             "priority": "high"
         },
         "Fund Universe Data": {
-            "keywords": ["fund data", "fund universe", "fund information"],
+            "keywords": ["fund data", "fund universe", "fund information", "fund screening"],
             "weight": 0.9,
             "priority": "medium"
         }
@@ -329,12 +334,12 @@ INTELLIGENCE_CATEGORIES = {
     
     "Index Providers": {
         "Equity Index Providers": {
-            "keywords": ["MSCI", "S&P", "FTSE", "Russell", "index provider"],
+            "keywords": ["MSCI", "S&P", "FTSE", "Russell", "Dow Jones", "index provider"],
             "weight": 1.2,
             "priority": "high"
         },
         "Fixed Income Index Providers": {
-            "keywords": ["Bloomberg", "ICE", "bond index", "fixed income benchmark"],
+            "keywords": ["Bloomberg Barclays", "ICE BofA", "bond index", "fixed income benchmark"],
             "weight": 1.0,
             "priority": "high"
         }
@@ -342,32 +347,32 @@ INTELLIGENCE_CATEGORIES = {
     
     "ESG & Sustainability": {
         "Sustainability Integration": {
-            "keywords": ["ESG integration", "sustainability", "responsible investing"],
+            "keywords": ["ESG integration", "sustainability", "responsible investing", "sustainable investment"],
             "weight": 1.2,
             "priority": "high"
         },
         "Climate Integration": {
-            "keywords": ["climate", "carbon", "net zero", "decarbonization"],
+            "keywords": ["climate", "carbon footprint", "net zero", "climate change", "decarbonization"],
             "weight": 1.2,
             "priority": "high"
         },
-        "Sustainability Offering": {
-            "keywords": ["ESG fund", "sustainable fund", "impact fund"],
+        "Sustainability Product Offering": {
+            "keywords": ["ESG fund", "sustainable fund", "impact fund", "green bond"],
             "weight": 1.1,
             "priority": "high"
         },
-        "Signatory Pledges": {
-            "keywords": ["PRI signatory", "net zero commitment", "climate pledge", "TCFD"],
+        "Signatory Status & Pledges": {
+            "keywords": ["PRI signatory", "net zero commitment", "climate pledge", "UN PRI", "TCFD"],
             "weight": 1.0,
             "priority": "medium"
         },
         "ESG Data Providers": {
-            "keywords": ["Sustainalytics", "MSCI ESG", "ISS ESG", "Refinitiv"],
+            "keywords": ["Sustainalytics", "MSCI ESG", "ISS ESG", "Refinitiv", "ESG data"],
             "weight": 1.1,
             "priority": "high"
         },
         "Climate Data Providers": {
-            "keywords": ["Trucost", "carbon data", "climate analytics", "CDP"],
+            "keywords": ["Trucost", "carbon data", "climate analytics", "CDP", "S&P Trucost"],
             "weight": 1.0,
             "priority": "medium"
         }
@@ -375,12 +380,12 @@ INTELLIGENCE_CATEGORIES = {
     
     "Private Markets": {
         "Private Assets Analytics": {
-            "keywords": ["private asset analytics", "alternative analytics"],
+            "keywords": ["private asset analytics", "alternative analytics", "private markets analytics"],
             "weight": 1.0,
             "priority": "high"
         },
         "Private Asset Data": {
-            "keywords": ["private asset data", "alternative data", "Preqin"],
+            "keywords": ["private asset data", "alternative data", "private markets data", "Preqin"],
             "weight": 1.0,
             "priority": "high"
         }
@@ -388,11 +393,11 @@ INTELLIGENCE_CATEGORIES = {
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
-# HELPER FUNCTIONS
+# ADVANCED SCRAPING FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════
 
 def fetch_page_robust(url, timeout=10, retries=3):
-    """Robust page fetching with retry logic"""
+    """Robust page fetching with retry logic and enhanced error messages"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -460,10 +465,7 @@ def clean_text(text):
     return text.strip()
 
 def extract_aum_value(text):
-    """
-    Extract AUM values from text with pattern matching
-    Returns: list of found AUM amounts with normalized values
-    """
+    """Extract AUM values with pattern matching and normalization"""
     aum_patterns = [
         r'\$\s*(\d+(?:\.\d+)?)\s*(billion|trillion|million)\s*(?:in)?\s*(?:assets|AUM)',
         r'(\d+(?:\.\d+)?)\s*(billion|trillion|million)\s*(?:in)?\s*(?:assets|AUM)',
@@ -482,7 +484,6 @@ def extract_aum_value(text):
                 amount = float(match.group(1))
                 unit = match.group(2).lower()
                 
-                # Normalize to billions
                 if unit in ['b', 'billion']:
                     value_in_billions = amount
                 elif unit in ['m', 'million']:
@@ -523,7 +524,7 @@ def extract_context_snippet(text, keyword, context_length=150):
     return snippet
 
 def analyze_content_advanced(html, question, config):
-    """Advanced content analysis with AUM extraction"""
+    """Advanced content analysis with AUM extraction and weighted scoring"""
     if not html:
         return {
             "matches": [],
@@ -565,7 +566,7 @@ def analyze_content_advanced(html, question, config):
             if snippet and snippet not in snippets:
                 snippets.append(snippet)
     
-    # Calculate confidence
+    # Calculate weighted confidence
     if len(keywords) > 0:
         base_confidence = (len(matches) / len(keywords)) * 100
         total_mentions = sum(m["count"] for m in matches)
@@ -613,34 +614,43 @@ def prioritize_links(links):
     return prioritized + normal
 
 # ═══════════════════════════════════════════════════════════════════════════
-# STREAMLIT UI
+# STREAMLIT UI - ULTIMATE DESIGN
 # ═══════════════════════════════════════════════════════════════════════════
 
-st.markdown('<div class="main-header">🎯 MSCI Intelligence Platform v2.1</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Enterprise Intelligence with AUM Detection</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🎯 MSCI Wealth Management Intelligence Platform</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">v2.2 ULTIMATE - Automated Due Diligence with AUM Detection</div>', unsafe_allow_html=True)
 st.markdown("---")
 
 # Sidebar
 with st.sidebar:
-    st.header("⚙️ Configuration")
+    st.header("⚙️ Intelligence Configuration")
     
     target_url = st.text_input(
         "Target Firm URL",
         placeholder="https://www.firmname.com",
-        help="Homepage of the wealth management firm"
+        help="Enter the homepage of the wealth management firm"
     )
     
-    st.markdown("### Crawl Settings")
-    max_pages = st.slider("Max Pages", 5, 50, 15)
-    max_depth = st.slider("Crawl Depth", 1, 3, 2)
-    crawl_delay = st.slider("Delay (sec)", 0.5, 5.0, 1.5, 0.5)
+    st.markdown("### Crawl Parameters")
+    max_pages = st.slider("Maximum Pages", 1, 50, 15, help="Number of pages to analyze")
+    max_depth = st.slider("Crawl Depth", 1, 3, 2, help="How deep to follow links")
+    crawl_delay = st.slider("Request Delay (sec)", 0.5, 5.0, 1.5, 0.5, help="Polite delay between requests")
+    
+    st.markdown("---")
     
     start_intel = st.button("🚀 Start Intelligence Gathering", type="primary", use_container_width=True)
     
     st.markdown("---")
+    st.markdown("### 📊 Coverage")
     total_questions = sum(len(q) for q in INTELLIGENCE_CATEGORIES.values())
-    st.metric("Intelligence Points", total_questions)
-    st.caption("v2.1 - AUM Detection Enabled")
+    st.metric("Total Intelligence Points", total_questions)
+    st.metric("Categories", len(INTELLIGENCE_CATEGORIES))
+    
+    st.markdown("---")
+    st.markdown("### 🛡️ About")
+    st.caption("**Ultimate Edition v2.2**")
+    st.caption("Comprehensive web intelligence using BeautifulSoup for wealth management due diligence")
+    st.caption("Built for MSCI Sales Team")
 
 # Main content
 if start_intel and target_url:
@@ -687,7 +697,7 @@ if start_intel and target_url:
         if current_url in visited or depth > max_depth:
             continue
         
-        status_text.markdown(f"**Analyzing:** `{current_url}`")
+        status_text.markdown(f"**🔍 Analyzing:** `{current_url}`")
         
         html = fetch_page_robust(current_url)
         
@@ -695,7 +705,7 @@ if start_intel and target_url:
             visited.add(current_url)
             pages_crawled += 1
             
-            # Analyze
+            # Analyze for all intelligence points
             for category, questions in INTELLIGENCE_CATEGORIES.items():
                 for question, config in questions.items():
                     result = analyze_content_advanced(html, question, config)
@@ -713,7 +723,7 @@ if start_intel and target_url:
                     if result["matches"] and current_url not in current_intel["sources"]:
                         current_intel["sources"].append(current_url)
             
-            # Extract links
+            # Extract and prioritize links
             if depth < max_depth:
                 new_links = extract_internal_links(html, current_url)
                 prioritized_links = prioritize_links(new_links)
@@ -726,6 +736,7 @@ if start_intel and target_url:
             progress_bar.progress(min(pages_crawled / max_pages, 1.0))
             pages_metric.metric("Pages", pages_crawled)
             
+            # Calculate stats
             found_count = sum(1 for cat in intelligence.values() for q in cat.values() if q["status"] == "found")
             partial_count = sum(1 for cat in intelligence.values() for q in cat.values() if q["status"] == "partial")
             not_found_count = sum(1 for cat in intelligence.values() for q in cat.values() if q["status"] == "not found")
@@ -736,27 +747,28 @@ if start_intel and target_url:
             
             time.sleep(crawl_delay)
     
-    status_text.markdown(f"**✅ Complete!** Analyzed {pages_crawled} pages.")
+    status_text.markdown(f"**✅ Intelligence Gathering Complete!** Analyzed {pages_crawled} pages.")
     
     # Display results
     st.markdown("## 📊 Intelligence Report")
     
+    # Executive summary
     summary_col1, summary_col2, summary_col3, summary_col4 = st.columns(4)
     with summary_col1:
-        st.metric("Found", found_count)
+        st.metric("Intelligence Points Found", found_count)
     with summary_col2:
-        st.metric("Partial", partial_count)
+        st.metric("Partial Intelligence", partial_count)
     with summary_col3:
         coverage = round((found_count + partial_count) / total_questions * 100, 1)
         st.metric("Coverage", f"{coverage}%")
     with summary_col4:
-        st.metric("Pages", pages_crawled)
+        st.metric("Pages Analyzed", pages_crawled)
     
     st.markdown("---")
     
-    # Results by category
+    # Detailed findings by category
     for category, questions in intelligence.items():
-        with st.expander(f"**{category}** ({len(questions)} points)", expanded=False):
+        with st.expander(f"**{category}** ({len(questions)} intelligence points)", expanded=False):
             for question, data in questions.items():
                 col_q, col_s, col_c = st.columns([3, 1, 1])
                 
@@ -787,12 +799,14 @@ if start_intel and target_url:
                                     unsafe_allow_html=True
                                 )
                         
-                        # Keywords
+                        # Keywords found
                         if data["matches"]:
                             keywords_found = [m["keyword"] for m in data["matches"]]
-                            st.markdown(f"**🎯 Keywords:** {', '.join(keywords_found[:5])}")
+                            mentions_total = sum(m["count"] for m in data["matches"])
+                            st.markdown(f"**🎯 Keywords Found:** {', '.join(keywords_found[:5])}")
+                            st.caption(f"Total mentions: {mentions_total}")
                         
-                        # Snippets
+                        # Evidence snippets
                         if data["snippets"]:
                             st.markdown("**📄 Evidence:**")
                             for snippet in data["snippets"]:
@@ -800,17 +814,20 @@ if start_intel and target_url:
                         
                         # Sources
                         if data["sources"]:
-                            st.markdown(f"**🔗 Found on {len(data['sources'])} page(s)**")
+                            st.markdown(f"**🔗 Found on {len(data['sources'])} page(s):**")
                             for j, source in enumerate(data["sources"][:3], 1):
-                                st.caption(f"{j}. {source}")
+                                st.markdown(f"{j}. [{source}]({source})")
+                            if len(data["sources"]) > 3:
+                                st.caption(f"...and {len(data['sources']) - 3} more pages")
                         
                         st.markdown('</div>', unsafe_allow_html=True)
                 
                 st.markdown("---")
     
-    # Export
-    st.markdown("## 📥 Export")
+    # Export functionality - ALL 3 OPTIONS RESTORED
+    st.markdown("## 📥 Export Intelligence Reports")
     
+    # Prepare export data
     export_data = []
     for category, questions in intelligence.items():
         for question, data in questions.items():
@@ -822,75 +839,138 @@ if start_intel and target_url:
             
             export_data.append({
                 "Category": category,
-                "Question": question,
+                "Intelligence Point": question,
                 "Status": data["status"].upper(),
                 "Confidence (%)": data["confidence"],
                 "Keywords Found": keywords_found,
                 "AUM Detected": aum_str,
-                "Evidence": data["evidence_count"],
-                "Snippets": snippets_combined[:500],
+                "Evidence Count": data["evidence_count"],
+                "Top Snippets": snippets_combined[:500],
                 "Sources": "; ".join(data["sources"]),
+                "Number of Sources": len(data["sources"]),
                 "Priority": data["config"].get("priority", "medium").upper()
             })
     
     df = pd.DataFrame(export_data)
+    firm_name = urlparse(target_url).netloc.replace("www.", "")
     
-    col1, col2 = st.columns(2)
-    with col1:
+    # THREE export options
+    col_export1, col_export2, col_export3 = st.columns(3)
+    
+    with col_export1:
         csv = df.to_csv(index=False)
-        firm_name = urlparse(target_url).netloc.replace("www.", "")
         st.download_button(
-            "📊 Full Report (CSV)",
-            csv,
-            f"MSCI_Intelligence_{firm_name}_{time.strftime('%Y%m%d')}.csv",
-            "text/csv",
-            use_container_width=True
+            label="📊 Download Full Intelligence Report (CSV)",
+            data=csv,
+            file_name=f"MSCI_Intelligence_{firm_name}_{time.strftime('%Y%m%d')}.csv",
+            mime="text/csv",
+            use_container_width=True,
+            help="Complete intelligence report with all findings"
         )
     
-    with col2:
+    with col_export2:
         summary_df = df[df["Status"].isin(["FOUND", "PARTIAL"])].copy()
         summary_csv = summary_df.to_csv(index=False)
         st.download_button(
-            "📋 Summary (CSV)",
-            summary_csv,
-            f"MSCI_Summary_{firm_name}_{time.strftime('%Y%m%d')}.csv",
-            "text/csv",
-            use_container_width=True
+            label="📋 Download Summary Report (CSV)",
+            data=summary_csv,
+            file_name=f"MSCI_Summary_{firm_name}_{time.strftime('%Y%m%d')}.csv",
+            mime="text/csv",
+            use_container_width=True,
+            help="Found and Partial findings only"
+        )
+    
+    with col_export3:
+        # RESTORED: High priority items export
+        priority_df = df[df["Priority"] == "HIGH"].copy()
+        priority_csv = priority_df.to_csv(index=False)
+        st.download_button(
+            label="🎯 Download High Priority Items (CSV)",
+            data=priority_csv,
+            file_name=f"MSCI_Priority_{firm_name}_{time.strftime('%Y%m%d')}.csv",
+            mime="text/csv",
+            use_container_width=True,
+            help="High-priority intelligence points only"
         )
 
 else:
-    st.info("👈 Configure settings and click 'Start Intelligence Gathering'")
+    # Welcome screen - RESTORED COMPREHENSIVE CONTENT
+    st.info("👈 **Get Started:** Configure settings in the sidebar and click 'Start Intelligence Gathering'")
     
-    st.markdown("### 🎯 New in v2.1")
-    col1, col2, col3 = st.columns(3)
+    st.markdown("### 🎯 Strategic Intelligence Platform - Ultimate Edition")
     
-    with col1:
-        st.markdown("#### 💰 AUM Detection")
+    col_feature1, col_feature2, col_feature3 = st.columns(3)
+    
+    with col_feature1:
+        st.markdown("#### 🕸️ Advanced Crawling")
         st.markdown("""
-        - Automatically extracts AUM values
-        - Normalizes to billions
-        - Shows dollar amounts
-        - Multiple detection patterns
+        - Multi-page recursive analysis
+        - Intelligent link prioritization
+        - Robust error handling
+        - Production-grade reliability
+        - No CORS restrictions
         """)
     
-    with col2:
-        st.markdown("#### 🏢 Firm Profile")
+    with col_feature2:
+        st.markdown("#### 🎯 Deep Intelligence")
         st.markdown("""
-        - Client count tracking
-        - Office locations
-        - Year founded
-        - Geographic presence
+        - 48 intelligence data points
+        - Weighted keyword matching
+        - Context-aware extraction
+        - Evidence-based findings
+        - **NEW: AUM detection & extraction**
         """)
     
-    with col3:
-        st.markdown("#### 🔧 Improvements")
+    with col_feature3:
+        st.markdown("#### 📊 Professional Reports")
         st.markdown("""
-        - Refactored code
-        - Bug fixes
-        - Better error handling
-        - Enhanced UI
+        - Detailed findings display
+        - Source attribution
+        - **3 export options restored**
+        - Priority-based filtering
+        - Export-ready formats
         """)
+    
+    st.markdown("---")
+    st.markdown("### 💼 Perfect for MSCI Sales & Relationship Management")
+    st.markdown("""
+    **Strategic Use Cases:**
+    
+    - **Pre-Meeting Intelligence**: Gather comprehensive firm insights before client calls
+    - **Competitive Analysis**: Understand technology stacks and capabilities
+    - **Opportunity Identification**: Spot gaps where MSCI solutions fit
+    - **Account Planning**: Build strategic account plans with data-driven insights
+    - **Proposal Development**: Reference actual firm practices in proposals
+    - **RFP Responses**: Quick intelligence for RFP questionnaires
+    - **AUM Sizing**: Automatically detect and extract Assets Under Management
+    - **Prospect Prioritization**: Focus on firms with specific AUM ranges
+    """)
+    
+    st.markdown("---")
+    st.markdown("### 📋 Intelligence Coverage Areas")
+    
+    for i, (category, questions) in enumerate(INTELLIGENCE_CATEGORIES.items(), 1):
+        high_priority = sum(1 for q in questions.values() if q.get("priority") == "high")
+        st.markdown(f"**{i}. {category}** - {len(questions)} points ({high_priority} high priority)")
+        sample_questions = list(questions.keys())[:3]
+        for q in sample_questions:
+            st.markdown(f"   • {q}")
+    
+    st.markdown("---")
+    st.markdown("### 💡 How It Works")
+    st.markdown("""
+    1. **Enter Target URL** - Provide the homepage of a wealth management firm
+    2. **Configure Settings** - Set max pages, depth, and crawl delay
+    3. **Start Crawling** - The system automatically discovers and analyzes pages
+    4. **View Results** - See findings organized by category with confidence scores
+    5. **Export Reports** - Download comprehensive CSV reports for your team
+    
+    **The platform uses advanced techniques from "Web Scraping with Python" by Ryan Mitchell
+    to ensure robust, reliable, and accurate intelligence gathering.**
+    """)
 
+# Footer - RESTORED COMPREHENSIVE CREDITS
 st.markdown("---")
-st.caption("🎯 MSCI Intelligence Platform v2.1 | AUM Detection Enabled")
-st.caption("© 2025 - Built for MSCI Sales Team")
+st.caption("🎯 MSCI Wealth Management Intelligence Platform v2.2 ULTIMATE | Enterprise Sales Intelligence")
+st.caption("Powered by Advanced Web Scraping Techniques • BeautifulSoup • Streamlit")
+st.caption("© 2025 - Designed for MSCI Sales & Relationship Management Teams • Built with techniques from 'Web Scraping with Python' by Ryan Mitchell")
